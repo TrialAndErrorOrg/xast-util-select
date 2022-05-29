@@ -1,3 +1,4 @@
+/* eslint-disable */
 const config = {
   displayName: 'xast-util-select',
   preset: '../../../jest.preset.js',
