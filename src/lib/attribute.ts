@@ -1,11 +1,4 @@
-import {
-  Rule,
-  RuleAttr,
-  Element,
-  Schema,
-  Info,
-  AttributeValue,
-} from './types.js'
+import { Rule, RuleAttr, Element, Schema, Info, AttributeValue } from './types.js'
 
 import { stringify as commas } from 'comma-separated-tokens'
 import { find } from 'property-information'
@@ -17,9 +10,7 @@ const handle = zwitch('operator', {
   /**
    * TODO: Why doesnt TS-expect-error work reee
    */
-  //// @ts-expect-error: hush.
-  unknown: unknownOperator as  any,
-  //// @ts-expect-error: hush.
+  unknown: unknownOperator as any,
   invalid: exists as any,
   handlers: {
     '=': exact as any,
@@ -37,11 +28,7 @@ const handle = zwitch('operator', {
  * @param {Schema} schema
  * @returns {boolean}
  */
-export function attribute(
-  query: Rule,
-  element: Element,
-  schema: Schema
-): boolean {
+export function attribute(query: Rule, element: Element, schema: Schema): boolean {
   const attrs = query.attrs
   let index = -1
 
@@ -77,8 +64,8 @@ function exists(_: RuleAttr, element: Element, info: Info): boolean {
 function exact(query: RuleAttr, element: Element, info: Info): boolean {
   return Boolean(
     hasAttribute(element, info.attribute) &&
-      element.attributes &&
-      normalizeValue(element.attributes[info.attribute], info) === query.value
+    element.attributes &&
+    normalizeValue(element.attributes[info.attribute], info) === query.value,
   )
 }
 
@@ -90,11 +77,7 @@ function exact(query: RuleAttr, element: Element, info: Info): boolean {
  * @param {Info} info
  * @returns {boolean}
  */
-function spaceSeparatedList(
-  query: RuleAttr,
-  element: Element,
-  info: Info
-): boolean {
+function spaceSeparatedList(query: RuleAttr, element: Element, info: Info): boolean {
   const value = element.attributes && element.attributes[info.attribute]
 
   return (
@@ -108,8 +91,7 @@ function spaceSeparatedList(
       value.includes(query.value)) ||
     // For all other values (including comma-separated lists), return whether this
     // is an exact match.
-    (hasAttribute(element, info.attribute) &&
-      normalizeValue(value, info) === query.value)
+    (hasAttribute(element, info.attribute) && normalizeValue(value, info) === query.value)
   )
 }
 
@@ -122,17 +104,14 @@ function spaceSeparatedList(
  * @returns {boolean}
  */
 function exactOrPrefix(query: RuleAttr, element: Element, info: Info): boolean {
-  const value = normalizeValue(
-    element.attributes && element.attributes[info.attribute],
-    info
-  )
+  const value = normalizeValue(element.attributes && element.attributes[info.attribute], info)
 
   return Boolean(
     hasAttribute(element, info.attribute) &&
-      query.value &&
-      (value === query.value ||
-        (value.slice(0, query.value.length) === query.value &&
-          value.charAt(query.value.length) === '-'))
+    query.value &&
+    (value === query.value ||
+      (value.slice(0, query.value.length) === query.value &&
+        value.charAt(query.value.length) === '-')),
   )
 }
 
@@ -147,12 +126,10 @@ function exactOrPrefix(query: RuleAttr, element: Element, info: Info): boolean {
 function begins(query: RuleAttr, element: Element, info: Info): boolean {
   return Boolean(
     hasAttribute(element, info.attribute) &&
-      element.attributes &&
-      query.value &&
-      normalizeValue(element.attributes[info.attribute], info).slice(
-        0,
-        query.value.length
-      ) === query.value
+    element.attributes &&
+    query.value &&
+    normalizeValue(element.attributes[info.attribute], info).slice(0, query.value.length) ===
+      query.value,
   )
 }
 
@@ -167,11 +144,10 @@ function begins(query: RuleAttr, element: Element, info: Info): boolean {
 function ends(query: RuleAttr, element: Element, info: Info): boolean {
   return Boolean(
     hasAttribute(element, info.attribute) &&
-      element.attributes &&
-      query.value &&
-      normalizeValue(element.attributes[info.attribute], info).slice(
-        -query.value.length
-      ) === query.value
+    element.attributes &&
+    query.value &&
+    normalizeValue(element.attributes[info.attribute], info).slice(-query.value.length) ===
+      query.value,
   )
 }
 
@@ -186,11 +162,9 @@ function ends(query: RuleAttr, element: Element, info: Info): boolean {
 function contains(query: RuleAttr, element: Element, info: Info): boolean {
   return Boolean(
     hasAttribute(element, info.attribute) &&
-      element.attributes &&
-      query.value &&
-      normalizeValue(element.attributes[info.attribute], info).includes(
-        query.value
-      )
+    element.attributes &&
+    query.value &&
+    normalizeValue(element.attributes[info.attribute], info).includes(query.value),
   )
 }
 

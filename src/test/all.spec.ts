@@ -1,15 +1,18 @@
 import { u } from 'unist-builder'
 import { x } from 'xastscript'
 import { selectAll } from '../index.js'
+import { test, expect } from 'vitest'
 
-test('all together now', (t) => {
+// Ported from hast-util-select. xast has no classes (class selectors are not supported),
+// so the hast `.foo` classes are written as plain `class` attributes here.
+test('all together now', () => {
   expect(
     selectAll(
-      'dl > dt.foo:nth-of-type(odd)',
+      'dl > dt[class=foo]:nth-of-type(odd)',
       u('root', [
         x('dl', [
           '\n  ',
-          x('dt.foo', 'Alpha'),
+          x('dt', { class: 'foo' }, 'Alpha'),
           '\n  ',
           x('dd', 'Bravo'),
           '\n  ',
@@ -22,13 +25,13 @@ test('all together now', (t) => {
           x('dd', 'Foxtrot'),
           '\n',
         ]),
-      ])
-    )
-  ).toEqual([x('dt.foo', 'Alpha')])
+      ]),
+    ),
+  ).toEqual([x('dt', { class: 'foo' }, 'Alpha')])
 
   expect(
     selectAll(
-      '.foo ~ dd:nth-of-type(even)',
+      '[class=foo] ~ dd:nth-of-type(even)',
       u('root', [
         x('dl', [
           '\n  ',
@@ -36,7 +39,7 @@ test('all together now', (t) => {
           '\n  ',
           x('dd', 'Bravo'),
           '\n  ',
-          x('dt.foo', 'Charlie'),
+          x('dt', { class: 'foo' }, 'Charlie'),
           '\n  ',
           x('dd', 'Delta'),
           '\n  ',
@@ -49,13 +52,13 @@ test('all together now', (t) => {
           x('dd', 'Hotel'),
           '\n',
         ]),
-      ])
-    )
+      ]),
+    ),
   ).toEqual([x('dd', 'Delta'), x('dd', 'Hotel')])
 
   expect(
     selectAll(
-      '.foo + dd:nth-of-type(even)',
+      '[class=foo] + dd:nth-of-type(even)',
       u('root', [
         x('dl', [
           '\n  ',
@@ -63,7 +66,7 @@ test('all together now', (t) => {
           '\n  ',
           x('dd', 'Bravo'),
           '\n  ',
-          x('dt.foo', 'Charlie'),
+          x('dt', { class: 'foo' }, 'Charlie'),
           '\n  ',
           x('dd', 'Delta'),
           '\n  ',
@@ -76,29 +79,29 @@ test('all together now', (t) => {
           x('dd', 'Hotel'),
           '\n',
         ]),
-      ])
-    )
+      ]),
+    ),
   ).toEqual([x('dd', 'Delta')])
 
   expect(
     selectAll(
-      '.foo, :nth-of-type(even), [title]',
+      '[class=foo], :nth-of-type(even), [title]',
       u('root', [
         x('dl', [
           x('dt', { title: 'bar' }, 'Alpha'),
           x('dd', 'Bravo'),
-          x('dt.foo', 'Charlie'),
+          x('dt', { class: 'foo' }, 'Charlie'),
           x('dd', 'Delta'),
           x('dt', 'Echo'),
-          x('dd.foo', { title: 'baz' }, 'Foxtrot'),
+          x('dd', { class: 'foo', title: 'baz' }, 'Foxtrot'),
           x('dt', 'Golf'),
           x('dd', 'Hotel'),
         ]),
-      ])
-    )
+      ]),
+    ),
   ).toEqual([
-    x('dt.foo', 'Charlie'),
-    x('dd.foo', { title: 'baz' }, 'Foxtrot'),
+    x('dt', { class: 'foo' }, 'Charlie'),
+    x('dd', { class: 'foo', title: 'baz' }, 'Foxtrot'),
     x('dd', 'Delta'),
     x('dt', 'Golf'),
     x('dd', 'Hotel'),

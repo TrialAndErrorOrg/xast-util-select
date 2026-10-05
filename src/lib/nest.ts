@@ -1,12 +1,4 @@
-import {
-  Rule,
-  XastNode as Node,
-  Element,
-  XastParent as Parent,
-  SelectState,
-  SelectIterator,
-  Handler,
-} from './types.js'
+import { Rule, XastNode as Node, Element, XastParent as Parent, SelectState } from './types.js'
 
 import { zwitch } from 'zwitch'
 import { enterState } from './enter-state.js'
@@ -15,9 +7,7 @@ import { parent, element } from './util.js'
 const own = {}.hasOwnProperty
 
 const handle = zwitch('nestingOperator', {
-  //// @ts-expect-error: hush.
   unknown: unknownNesting as any,
-  //// @ts-expect-error: hush.
   invalid: topScan as any, // `undefined` is the top query selector.
   handlers: {
     null: descendant as any, // `null` is the descendant combinator.
